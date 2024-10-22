@@ -12,9 +12,9 @@ RUN apk add --no-cache openjdk8 curl tar && \
            /usr/local/tomcat/webapps/manager \
            /usr/local/tomcat/webapps/host-manager && \
     chmod +x /usr/local/tomcat/bin/*.sh
-    
-COPY /home/ec2-user/post/tomcatwas/index.html /usr/local/tomcat/webapps/ROOT/
-COPY /home/ec2-user/post/post/* /usr/local/tomcat/webapps/ROOT/
+
+COPY index.html /usr/local/tomcat/webapps/ROOT/
+COPY post /usr/local/tomcat/webapps/ROOT/
 
 # 최종 단계
 FROM alpine:latest
