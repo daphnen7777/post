@@ -14,7 +14,7 @@ RUN apk add --no-cache openjdk8 curl tar && \
     chmod +x /usr/local/tomcat/bin/*.sh
 
 COPY index.html /usr/local/tomcat/webapps/ROOT/
-COPY post /usr/local/tomcat/webapps/ROOT/
+COPY ./post /usr/local/tomcat/webapps/ROOT/
 
 # 최종 단계
 FROM alpine:latest
