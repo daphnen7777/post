@@ -1,38 +1,28 @@
-FROM centos:7 as builder
+FROM tomcat:9.0
 
-RUN yum install -y java-1.8.0-openjdk-devel curl tar && \
-    mkdir -p /usr/local/tomcat && \
-    yum clean all
-
-COPY apache-tomcat-9.0.89.tar.gz /usr/local/tomcat/
-COPY mysql-connector-java-8.0.29-1.el7.noarch.rpm /usr/local/tomcat/
-
-RUN tar -xzf /usr/local/tomcat/apache-tomcat-9.0.89.tar.gz -C /usr/local/tomcat --strip-components=1 && \
-    yum localinstall -y /usr/local/tomcat/mysql-connector-java-8.0.29-1.el7.noarch.rpm && \
-    cp /usr/share/java/mysql-connector-java-8.0.29.jar /usr/local/tomcat/lib/ && \
-    rm /usr/local/tomcat/apache-tomcat-9.0.89.tar.gz && \
-    rm -rf /usr/local/tomcat/webapps/examples \
-           /usr/local/tomcat/webapps/docs \
-           /usr/local/tomcat/webapps/manager \
-           /usr/local/tomcat/webapps/host-manager && \
-    chmod +x /usr/local/tomcat/bin/*.sh
-
-COPY index.html /usr/local/tomcat/webapps/ROOT/
-COPY ./post /usr/local/tomcat/webapps/ROOT/
-
-# Final stage
-FROM centos:7
-
-RUN yum install -y java-1.8.0-openjdk && \
-    yum clean all && \
-    rm -rf /var/cache/yum
-
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
+ENV TZ=Asia/Seoul
 ENV CATALINA_HOME /usr/local/tomcat
-ENV PATH $JAVA_HOME/bin:$CATALINA_HOME/bin:$PATH
+# JAVA_HOME 환경 변수 설정 (OpenJDK 설치 경로)
+ENV JAVA_HOME /opt/java/openjdk
 
-COPY --from=builder /usr/local/tomcat /usr/local/tomcat
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
+RUN rm -Rf /usr/local/tomcat/webapps
+RUN mkdir -p /usr/local/tomcat/webapps/ROOT
+RUN mkdir -p /usr/local/tomcat/webapps/images
+RUN mkdir -p /usr/local/tomcat/webapps/video
+COPY ./index.html /usr/local/tomcat/webapps/ROOT/.
+COPY ./mysql-connector-java-8.0.29.jar /usr/local/tomcat/lib/.
+COPY ./post /usr/local/tomcat/webapps/ROOT/.
+COPY ./post/*.jpg /usr/local/tomcat/webapps/images/.
+#COPY ./video/*.mp4 /usr/local/tomcat/webapps/video/.
+#COPY BookMarket.war /usr/local/tomcat/webapps/.
+#COPY server.xml /usr/local/tomcat/conf/.
+
+# COPY tomcat /etc/default/.
+
+# 필요한 포트 노출
 EXPOSE 8080
 
-CMD ["catalina.sh", "run"]
+# Tomcat 시작 명령어
+CMD ["/usr/local/tomcat/bin/catalina.sh", "run"]
