@@ -1,13 +1,16 @@
-FROM alpine:latest as builder
+FROM centos:7 as builder
 
-RUN mkdir -p /usr/local/tomcat
-COPY apache-tomcat-9.0.89.tar.gz /usr/local/tomcat
-COPY mysql-connector-java-8.0.29-1.el7.noarch.rpm /usr/local/tomcat
-RUN apk add --no-cache openjdk8 curl tar && \
-    tar -xzf apache-tomcat-9.0.89.tar.gz -C /usr/local/tomcat --strip-components=1 && \
-    yum install mysql-connector-java-8.0.29-1.el7.noarch.rpm && \
+RUN yum install -y java-1.8.0-openjdk-devel curl tar && \
+    mkdir -p /usr/local/tomcat && \
+    yum clean all
+
+COPY apache-tomcat-9.0.89.tar.gz /usr/local/tomcat/
+COPY mysql-connector-java-8.0.29-1.el7.noarch.rpm /usr/local/tomcat/
+
+RUN tar -xzf /usr/local/tomcat/apache-tomcat-9.0.89.tar.gz -C /usr/local/tomcat --strip-components=1 && \
+    yum localinstall -y /usr/local/tomcat/mysql-connector-java-8.0.29-1.el7.noarch.rpm && \
     cp /usr/share/java/mysql-connector-java-8.0.29.jar /usr/local/tomcat/lib/ && \
-    rm apache-tomcat-9.0.89.tar.gz && \
+    rm /usr/local/tomcat/apache-tomcat-9.0.89.tar.gz && \
     rm -rf /usr/local/tomcat/webapps/examples \
            /usr/local/tomcat/webapps/docs \
            /usr/local/tomcat/webapps/manager \
@@ -17,13 +20,14 @@ RUN apk add --no-cache openjdk8 curl tar && \
 COPY index.html /usr/local/tomcat/webapps/ROOT/
 COPY ./post /usr/local/tomcat/webapps/ROOT/
 
-# 최종 단계
-FROM alpine:latest
+# Final stage
+FROM centos:7
 
-RUN apk add --no-cache openjdk8-jre-base && \
-    rm -rf /var/cache/apk/*
+RUN yum install -y java-1.8.0-openjdk && \
+    yum clean all && \
+    rm -rf /var/cache/yum
 
-ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
+ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk
 ENV CATALINA_HOME /usr/local/tomcat
 ENV PATH $JAVA_HOME/bin:$CATALINA_HOME/bin:$PATH
 
