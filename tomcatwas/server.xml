@@ -152,7 +152,7 @@
       <Host name="localhost"  appBase="webapps"
             unpackWARs="true" autoDeploy="true">
 
-      <Context docBase="/var/lib/tomcat9/webapps/images" path="/images" reloadable="true" />
+      <Context docBase="/usr/local/tomcat/webapps/images" path="/images" reloadable="true" />
         <!-- SingleSignOn valve, share authentication between web applications
              Documentation at: /docs/config/valve.html -->
         <!--
