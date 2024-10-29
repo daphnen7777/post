@@ -16,7 +16,7 @@ COPY ./index.html /usr/local/tomcat/webapps/ROOT/.
 COPY ./mysql-connector-j-8.0.33.jar /usr/local/tomcat/lib/.
 COPY ./post/*.* /usr/local/tomcat/webapps/ROOT/post/.
 COPY ./post/*.jpg /usr/local/tomcat/webapps/images/.
-#COPY ./video/*.mp4 /usr/local/tomcat/webapps/video/.
+COPY ./video/*.mp4 /usr/local/tomcat/webapps/video/.
 COPY BookMarket.war /usr/local/tomcat/webapps/.
 # COPY server.xml /usr/local/tomcat/conf/.
 
