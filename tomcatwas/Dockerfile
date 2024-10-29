@@ -18,9 +18,9 @@ COPY ./post/*.* /usr/local/tomcat/webapps/ROOT/post/.
 COPY ./post/*.jpg /usr/local/tomcat/webapps/images/.
 COPY ./video/*.mp4 /usr/local/tomcat/webapps/video/.
 COPY BookMarket.war /usr/local/tomcat/webapps/.
-# COPY server.xml /usr/local/tomcat/conf/.
+COPY server.xml /usr/local/tomcat/conf/.
 
-# COPY tomcat /etc/default/.
+COPY tomcat /etc/default/.
 
 # 필요한 포트 노출
 EXPOSE 8080
