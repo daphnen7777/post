@@ -1,6 +1,6 @@
 -- Create table and insert data with Korean characters
 ALTER USER 'root'@'localhost' identified by 'root';
-ALTER USER 'root'@'%' identified by 'root';
+CREATE USER 'root'@'%' identified by 'root';
 GRANT ALL PRIVILEGES on *.* TO 'root'@'%' WITH GRANT OPTION;
 
 DROP DATABASE IF EXISTS pratice_board;
